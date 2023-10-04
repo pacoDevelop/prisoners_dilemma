@@ -1,22 +1,39 @@
-// Función para simular una estrategia aleatoria con números únicos
-function simulateRandomStrategy() {
-  const numbers = Array.from({
-    length: 100
-  }, (_, index) => index + 1); // Generar números del 1 al 100
+// Función para simular la estrategia aleatoria con números únicos para un prisionero
+function simulateRandomStrategyPrisioner() {
+  const numbers = Array.from({ length: 100 }, (_, index) => index + 1); // Generar números del 1 al 100
   const shuffledNumbers = shuffleArray(numbers); // Barajar los números aleatoriamente
-  // Simular búsqueda aleatoria en los cajones (aquí puedes establecer cuántos cajones abrir por prisionero)
-  for (let i = 0; i < shuffledNumbers.length; i++) {
-    if (i == 50) {
-      return false;
-    }
-    if (shuffledNumbers[i] === i + 1) {
-      return true; // Si un prisionero no encuentra su número, la estrategia falla
+ const selectedNumbers = []; // Usar un array para mantener un seguimiento de los números seleccionados
+  let attempts = 0;
+
+  while (attempts < 50) {
+    let randomIndex = Math.floor(Math.random() * 100);
+
+    // Verificar si el índice ya existe en selectedNumbers
+    while (selectedNumbers.includes(randomIndex)) {
+      randomIndex = Math.floor(Math.random() * 100);
     }
 
+    selectedNumbers.push(randomIndex); // Agregar el índice seleccionado al array
+
+    if (shuffledNumbers[randomIndex] === attempts + 1) {
+      return true; // El prisionero encuentra su número, la estrategia es exitosa
+    }
+    attempts++;
   }
-
-  return false; // La estrategia es exitosa si todos los prisioneros encuentran sus números
+	console.log(selectedNumbers.length)
+  return false; // La estrategia es fallida, el prisionero no encontró su número en 50 intentos
 }
+
+function simulateRandomStrategy() {
+	 for (let prisoner = 1; prisoner <= 100; prisoner++) {
+		if(!simulateRandomStrategyPrisioner()){
+		return false;
+		}
+	}
+  return true;
+}
+
+
 
 // Función para barajar un array aleatoriamente (algoritmo de Fisher-Yates)
 function shuffleArray(array) {
@@ -64,6 +81,7 @@ document.addEventListener('DOMContentLoaded', function() {
   const decreaseButton = document.getElementById('decrease-iterations');
   let iterations = 1000; // Inicialmente, 1000 iteraciones
   const simulations = document.getElementById('iteration-counter');
+  simulations.value = iterations ;
 
   function updateIterationCounter() {
     simulations.value = iterations;
