@@ -56,7 +56,8 @@ function simulateOptimalStrategy() {
 
 document.addEventListener('DOMContentLoaded', function() {
   const startButton = document.getElementById('start-button');
-  const resultText = document.getElementById('result');
+  const resultTextRandom = document.getElementById('result-random');
+  const resultTextOptimal = document.getElementById('result-optimal');
   const chartContainer = document.getElementById('chart-container');
   let myChart; // Variable para almacenar la instancia del gráfico
   const increaseButton = document.getElementById('increase-iterations');
@@ -103,8 +104,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const randomSuccessRate = (randomSuccessData.reduce((a, b) => a + b, 0) / iterations) * 100;
     const optimalSuccessRate = (optimalSuccessData.reduce((a, b) => a + b, 0) / iterations) * 100;
 
-    resultText.textContent = `Estrategia Aleatoria: ${randomSuccessRate.toFixed(2)}% Éxito`;
-    resultText.textContent += ` | Estrategia Óptima: ${optimalSuccessRate.toFixed(2)}% Éxito`;
+    resultTextRandom.textContent = `  Estrategia Aleatoria: ${randomSuccessRate.toFixed(2)}% Éxito`;
+    resultTextOptimal.textContent = `Estrategia Óptima: ${optimalSuccessRate.toFixed(2)}% Éxito`;
 
     // Destruir el gráfico anterior si existe
     if (myChart) {
