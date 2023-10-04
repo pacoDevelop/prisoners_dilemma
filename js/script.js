@@ -71,6 +71,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
   updateIterationCounter();
 
+	simulations.addEventListener('change',function() {
+    iterations= parseInt(simulations.value);
+  });
+	
+
   increaseButton.addEventListener('click', function() {
     iterations += 100; // Aumentar en 100 iteraciones
     updateIterationCounter();
