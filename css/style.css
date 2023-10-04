@@ -17,6 +17,10 @@ button {
     cursor: pointer;
 }
 
+button:disabled {
+    background-color: #0096b3;
+}
+
 button:hover {
     background-color: #0056b3;
 }
@@ -26,11 +30,10 @@ p {
     color: #333;
 }
 
-
 /* Estilo predeterminado para pantallas más grandes */
 .chart-container-wrapper {
-    height: 55%;
-    width: 55%;
+    height: 70%;
+    width: 70%;
     display: inline-flex;
 }
 
