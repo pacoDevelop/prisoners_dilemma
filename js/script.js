@@ -110,62 +110,79 @@
 	    }
 	  });
 
-	  startButton.addEventListener('click', function() {
-	    startButton.disabled = true;
-			startButton.textContent="Espere"
-	    const randomSuccessData = [];
-	    const optimalSuccessData = [];
+startButton.addEventListener('click', function() {
+    startButton.disabled = true;
+    startButton.textContent = "Espere";
 
-	    for (let i = 0; i < iterations; i++) {
-	      const randomSuccess = simulateRandomStrategy();
-	      const optimalSuccess = simulateOptimalStrategy();
+    const randomSuccessData = [];
+    const optimalSuccessData = [];
+    const batchSize = 1000; // Número de iteraciones por lote
+    let currentIteration = 0;
 
-	      randomSuccessData.push(randomSuccess ? 1 : 0);
-	      optimalSuccessData.push(optimalSuccess ? 1 : 0);
-	    }
+    function runSimulationBatch() {
+        for (let i = 0; i < batchSize; i++) {
+            if (currentIteration >= iterations) {
+                // Todas las iteraciones han terminado, mostrar resultados y habilitar el botón
+                const randomSuccess = randomSuccessData.reduce((a, b) => a + b, 0);
+                const optimalSuccess = optimalSuccessData.reduce((a, b) => a + b, 0);
+                const randomSuccessRate = (randomSuccess / iterations) * 100;
+                const optimalSuccessRate = (optimalSuccess / iterations) * 100;
 
-	    const randomSuccess = randomSuccessData.reduce((a, b) => a + b, 0);
-	    const optimalSuccess = optimalSuccessData.reduce((a, b) => a + b, 0);
-	    const randomSuccessRate = (randomSuccess / iterations) * 100;
-	    const optimalSuccessRate = (optimalSuccess / iterations) * 100;
+                resultTextRandom.textContent = `Estrategia Aleatoria: ${randomSuccessRate.toFixed(2)}% Éxito | Números de éxitos ${randomSuccess}`;
+                resultTextOptimal.textContent = `Estrategia Óptima: ${optimalSuccessRate.toFixed(2)}% Éxito | Números de éxitos ${optimalSuccess}`;
 
-	    resultTextRandom.textContent = `  Estrategia Aleatoria: ${randomSuccessRate.toFixed(2)}% Éxito | Números de éxitos ${randomSuccess}`;
-	    resultTextOptimal.textContent = `Estrategia Óptima: ${optimalSuccessRate.toFixed(2)}% Éxito | Números de éxitos ${optimalSuccess}`;
+                // Destruir el gráfico anterior si existe
+                if (myChart) {
+                    myChart.destroy();
+                }
 
-	    // Destruir el gráfico anterior si existe
-	    if (myChart) {
-	      myChart.destroy();
-	    }
+                // Crear y mostrar el nuevo gráfico
+                const ctx = chartContainer.getContext('2d');
+                myChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Probabilidad de Éxito (%)'],
+                        datasets: [{
+                            label: ' Estrategia Aleatoria',
+                            data: [randomSuccessRate],
+                            backgroundColor: ['blue'],
+                        }, {
+                            label: 'Estrategia Óptima',
+                            data: [optimalSuccessRate],
+                            backgroundColor: ['green'],
+                        }],
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                max: 100,
+                            },
+                        },
+                    },
+                });
 
-	    // Crear y mostrar el nuevo gráfico
-	    const ctx = chartContainer.getContext('2d');
-	    myChart = new Chart(ctx, {
-	      type: 'bar',
-	      data: {
-	        labels: ['Probabilidad de Éxito (%)'],
-	        datasets: [{
-	          label: ' Estrategia Aleatoria',
-	          data: [randomSuccessRate],
-	          backgroundColor: ['blue'],
-	        }, {
-	          label: 'Estrategia Óptima',
-	          data: [optimalSuccessRate],
-	          backgroundColor: ['green'],
-	        }],
-	      },
-	      options: {
-	        scales: {
-	          y: {
-	            beginAtZero: true,
-	            max: 100,
-	          },
-	        },
-	      },
-	    });
-			setTimeout(function() {
-      startButton.disabled = false;
-			startButton.textContent="Iniciar simulación"
-			}, 1000); // 2000 milisegundos = 2 segundos
-	    
-	  });
+                setTimeout(function() {
+                    startButton.disabled = false;
+                    startButton.textContent = "Iniciar simulación";
+                }, 200); // Habilitar el botón después de 1 segundo
+                return;
+            }
+
+            const randomSuccess = simulateRandomStrategy();
+            const optimalSuccess = simulateOptimalStrategy();
+
+            randomSuccessData.push(randomSuccess ? 1 : 0);
+            optimalSuccessData.push(optimalSuccess ? 1 : 0);
+
+            currentIteration++;
+        }
+
+        // Realizar el siguiente lote de iteraciones después de un breve retraso
+        setTimeout(runSimulationBatch, 0);
+    }
+
+    // Comenzar la simulación dividida en lotes
+    runSimulationBatch();
+});
 	});
