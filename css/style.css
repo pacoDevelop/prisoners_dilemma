@@ -25,3 +25,20 @@ p {
     font-size: 18px;
     color: #333;
 }
+
+
+/* Estilo predeterminado para pantallas más grandes */
+.chart-container-wrapper {
+    height: 70%;
+    width: 70%;
+    display: inline-flex;
+}
+
+/* Estilo para dispositivos móviles o pantallas pequeñas */
+@media (max-width: 768px) {
+    .chart-container-wrapper {
+        height: 100%;
+        width: 100%;
+        display: block;
+    }
+}
