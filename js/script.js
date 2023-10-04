@@ -64,7 +64,6 @@ document.addEventListener('DOMContentLoaded', function() {
   const decreaseButton = document.getElementById('decrease-iterations');
   let iterations = 1000; // Inicialmente, 1000 iteraciones
   const simulations = document.getElementById('iteration-counter');
-  simulations.value = iterations ;
 
   function updateIterationCounter() {
     simulations.value = iterations;
