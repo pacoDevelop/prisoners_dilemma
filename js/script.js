@@ -1,3 +1,5 @@
+	const prisonersSize=100;
+
 // Función para simular la estrategia aleatoria con números únicos para un prisionero
 function simulateRandomStrategyPrisioner() {
   const numbers = Array.from({ length: 100 }, (_, index) => index + 1); // Generar números del 1 al 100
@@ -20,12 +22,11 @@ function simulateRandomStrategyPrisioner() {
     }
     attempts++;
   }
-	console.log(selectedNumbers.length)
   return false; // La estrategia es fallida, el prisionero no encontró su número en 50 intentos
 }
 
 function simulateRandomStrategy() {
-	 for (let prisoner = 1; prisoner <= 100; prisoner++) {
+	 for (let prisoner = 1; prisoner <= prisonersSize; prisoner++) {
 		if(!simulateRandomStrategyPrisioner()){
 		return false;
 		}
@@ -51,7 +52,7 @@ function simulateOptimalStrategy() {
     length: 100
   }, (_, index) => index + 1);
   const shuffledBoxes = shuffleArray(boxes);
-  for (let prisoner = 1; prisoner <= 100; prisoner++) {
+  for (let prisoner = 1; prisoner <= prisonersSize; prisoner++) {
     let attempts = 0;
     let currentBox = prisoner;
     while (attempts < 50) {
@@ -72,6 +73,7 @@ function simulateOptimalStrategy() {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
+
   const startButton = document.getElementById('start-button');
   const resultTextRandom = document.getElementById('result-random');
   const resultTextOptimal = document.getElementById('result-optimal');
@@ -117,12 +119,14 @@ document.addEventListener('DOMContentLoaded', function() {
       randomSuccessData.push(randomSuccess ? 1 : 0);
       optimalSuccessData.push(optimalSuccess ? 1 : 0);
     }
+		
+		const randomSuccess=randomSuccessData.reduce((a, b) => a + b, 0);
+    const optimalSuccess=optimalSuccessData.reduce((a, b) => a + b, 0);
+    const randomSuccessRate = ( randomSuccess/ iterations) * 100;
+    const optimalSuccessRate = (optimalSuccess / iterations) * 100;
 
-    const randomSuccessRate = (randomSuccessData.reduce((a, b) => a + b, 0) / iterations) * 100;
-    const optimalSuccessRate = (optimalSuccessData.reduce((a, b) => a + b, 0) / iterations) * 100;
-
-    resultTextRandom.textContent = `  Estrategia Aleatoria: ${randomSuccessRate.toFixed(2)}% Éxito`;
-    resultTextOptimal.textContent = `Estrategia Óptima: ${optimalSuccessRate.toFixed(2)}% Éxito`;
+    resultTextRandom.textContent = `  Estrategia Aleatoria: ${randomSuccessRate.toFixed(2)}% Éxito | Números de éxitos ${randomSuccess}`;
+    resultTextOptimal.textContent = `Estrategia Óptima: ${optimalSuccessRate.toFixed(2)}% Éxito | Números de éxitos ${optimalSuccess}`;
 
     // Destruir el gráfico anterior si existe
     if (myChart) {
