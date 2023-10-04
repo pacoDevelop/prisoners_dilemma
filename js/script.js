@@ -116,12 +116,16 @@ document.addEventListener('DOMContentLoaded', function() {
     myChart = new Chart(ctx, {
       type: 'bar',
       data: {
-        labels: ['Estrategia Aleatoria', 'Estrategia Óptima'],
+        labels: ['Probabilidad de Éxito (%)'],
         datasets: [{
-          label: 'Probabilidad de Éxito (%)',
-          data: [randomSuccessRate, optimalSuccessRate],
-          backgroundColor: ['blue', 'green'],
-        }, ],
+          label: ' Estrategia Aleatoria',
+          data: [randomSuccessRate],
+          backgroundColor: ['blue'],
+        },{
+          label: 'Estrategia Óptima',
+          data: [optimalSuccessRate],
+          backgroundColor: ['green'],
+        } ],
       },
       options: {
         scales: {
