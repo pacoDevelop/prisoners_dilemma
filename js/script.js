@@ -7,7 +7,7 @@ function simulateRandomStrategy() {
   // Simular búsqueda aleatoria en los cajones (aquí puedes establecer cuántos cajones abrir por prisionero)
   for (let i = 0; i < shuffledNumbers.length; i++) {
     if (i == 50) {
-      return false
+      return false;
     }
     if (shuffledNumbers[i] === i + 1) {
       return true; // Si un prisionero no encuentra su número, la estrategia falla
@@ -46,7 +46,6 @@ function simulateOptimalStrategy() {
         attempts++;
       }
     }
-		console.log(attempts,prisoner);
     if (attempts >= 50) {
       return false; // Si un prisionero no encuentra su número en 50 intentos, la estrategia falla
     }
@@ -55,35 +54,36 @@ function simulateOptimalStrategy() {
   return true; // La estrategia es exitosa si todos los prisioneros encuentran sus números
 }
 
-/* document.addEventListener('DOMContentLoaded', function() {
-  const startButton = document.getElementById('start-button');
-  const resultText = document.getElementById('result');
-
-  startButton.addEventListener('click', function() {
-    const randomSuccess = simulateRandomStrategy();
-    const optimalSuccess = simulateOptimalStrategy();
-
-    if (randomSuccess) {
-      resultText.textContent = 'Estrategia Aleatoria: Éxito';
-    } else {
-      resultText.textContent = 'Estrategia Aleatoria: Fracaso';
-    }
-
-    if (optimalSuccess) {
-      resultText.textContent += ' | Estrategia Óptima: Éxito';
-    } else {
-      resultText.textContent += ' | Estrategia Óptima: Fracaso';
-    }
-  });
-}); */
 document.addEventListener('DOMContentLoaded', function() {
   const startButton = document.getElementById('start-button');
   const resultText = document.getElementById('result');
   const chartContainer = document.getElementById('chart-container');
+  let myChart; // Variable para almacenar la instancia del gráfico
+  const increaseButton = document.getElementById('increase-iterations');
+  const decreaseButton = document.getElementById('decrease-iterations');
+  let iterations = 1000; // Inicialmente, 1000 iteraciones
+  const simulations = document.getElementById('iteration-counter');
+  simulations.value = iterations ;
+
+  function updateIterationCounter() {
+    simulations.value = iterations;
+  }
+
+  updateIterationCounter();
+
+  increaseButton.addEventListener('click', function() {
+    iterations += 100; // Aumentar en 100 iteraciones
+    updateIterationCounter();
+  });
+
+  decreaseButton.addEventListener('click', function() {
+    if (iterations > 100) {
+      iterations -= 100; // Disminuir en 100 iteraciones, mínimo 100
+      updateIterationCounter();
+    }
+  });
 
   startButton.addEventListener('click', function() {
-    const iterations = 1000; // Cambia este número según la cantidad de simulaciones que desees
-
     const randomSuccessData = [];
     const optimalSuccessData = [];
 
@@ -101,19 +101,22 @@ document.addEventListener('DOMContentLoaded', function() {
     resultText.textContent = `Estrategia Aleatoria: ${randomSuccessRate.toFixed(2)}% Éxito`;
     resultText.textContent += ` | Estrategia Óptima: ${optimalSuccessRate.toFixed(2)}% Éxito`;
 
-    // Crear y mostrar el gráfico
+    // Destruir el gráfico anterior si existe
+    if (myChart) {
+      myChart.destroy();
+    }
+
+    // Crear y mostrar el nuevo gráfico
     const ctx = chartContainer.getContext('2d');
-    const myChart = new Chart(ctx, {
+    myChart = new Chart(ctx, {
       type: 'bar',
       data: {
         labels: ['Estrategia Aleatoria', 'Estrategia Óptima'],
-        datasets: [
-          {
-            label: 'Probabilidad de Éxito (%)',
-            data: [randomSuccessRate, optimalSuccessRate],
-            backgroundColor: ['blue', 'green'],
-          },
-        ],
+        datasets: [{
+          label: 'Probabilidad de Éxito (%)',
+          data: [randomSuccessRate, optimalSuccessRate],
+          backgroundColor: ['blue', 'green'],
+        }, ],
       },
       options: {
         scales: {
